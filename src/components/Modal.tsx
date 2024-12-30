@@ -33,7 +33,7 @@ function classNames(...classes) {
 
 const Modal = () => {
   const [open, setOpen] = useState(true);
-  const [dated, setDated] = useState(categories[0]);
+  const [category, setCategory] = useState(categories[0]);
   return (
     <Dialog open={open} onClose={setOpen} className='relative z-10'>
       <DialogBackdrop
@@ -92,8 +92,8 @@ const Modal = () => {
                     <div className='flex flex-nowrap justify-end space-x-2 px-2 py-2 sm:px-3'>
                       <Listbox
                         as='div'
-                        value={dated}
-                        onChange={setDated}
+                        value={category}
+                        onChange={setCategory}
                         className='shrink-0'
                       >
                         <Label className='sr-only'>Add a category</Label>
@@ -102,7 +102,7 @@ const Modal = () => {
                             <ListBulletIcon
                               aria-hidden='true'
                               className={classNames(
-                                dated.value === null
+                                category.value === null
                                   ? 'text-gray-300'
                                   : 'text-gray-500',
                                 'size-5 shrink-0 sm:-ml-1'
@@ -110,11 +110,13 @@ const Modal = () => {
                             />
                             <span
                               className={classNames(
-                                dated.value === null ? '' : 'text-gray-900',
+                                category.value === null ? '' : 'text-gray-900',
                                 'hidden truncate sm:ml-2 sm:block'
                               )}
                             >
-                              {dated.value === null ? 'Category' : dated.name}
+                              {category.value === null
+                                ? 'Category'
+                                : category.name}
                             </span>
                           </ListboxButton>
 
@@ -122,15 +124,15 @@ const Modal = () => {
                             transition
                             className='absolute right-0 z-10 mt-1 max-h-56 w-52 overflow-auto rounded-lg bg-white py-3 text-base shadow outline outline-1 outline-black/5 data-[closed]:data-[leave]:opacity-0 data-[leave]:transition data-[leave]:duration-100 data-[leave]:ease-in sm:text-sm'
                           >
-                            {categories.map((dueDate) => (
+                            {categories.map((categoryOption) => (
                               <ListboxOption
-                                key={dueDate.value}
-                                value={dueDate}
+                                key={categoryOption.value}
+                                value={categoryOption}
                                 className='cursor-default select-none bg-white px-3 py-2 data-[focus]:relative data-[focus]:bg-gray-100 data-[focus]:hover:outline-none'
                               >
                                 <div className='flex items-center'>
                                   <span className='block truncate font-medium'>
-                                    {dueDate.name}
+                                    {categoryOption.name}
                                   </span>
                                 </div>
                               </ListboxOption>
