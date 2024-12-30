@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react';
 import {
   Label,
@@ -8,6 +8,7 @@ import {
   ListboxOptions,
 } from '@headlessui/react';
 import { ListBulletIcon } from '@heroicons/react/20/solid';
+import { AppContext } from './context';
 
 const categories = [
   { name: 'Career & Work', value: null },
@@ -31,11 +32,22 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
+export type ModalHandler = (value: boolean) => void;
+
 const Modal = () => {
-  const [open, setOpen] = useState(true);
+  const context = useContext(AppContext);
   const [category, setCategory] = useState(categories[0]);
+
+  const toggleModal = () => {
+    context?.setOpen(!context.open);
+  };
+
   return (
-    <Dialog open={open} onClose={setOpen} className='relative z-10'>
+    <Dialog
+      open={context?.open}
+      onClose={toggleModal}
+      className='relative z-10'
+    >
       <DialogBackdrop
         transition
         className='fixed inset-0 bg-gray-500/75 transition-opacity data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in'
@@ -146,7 +158,7 @@ const Modal = () => {
                         <button
                           type='submit'
                           className='mr-2 inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50'
-                          onClick={() => setOpen(false)}
+                          onClick={toggleModal}
                         >
                           Cancel
                         </button>
