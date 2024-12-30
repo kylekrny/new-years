@@ -1,10 +1,5 @@
 import { useState } from 'react';
-import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-  DialogTitle,
-} from '@headlessui/react';
+import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react';
 import {
   Label,
   Listbox,
@@ -12,18 +7,7 @@ import {
   ListboxOption,
   ListboxOptions,
 } from '@headlessui/react';
-import { ListBulletIcon, NumberedListIcon } from '@heroicons/react/20/solid';
-
-const assignees = [
-  { name: 'Unassigned', value: null },
-  {
-    name: 'Wade Cooper',
-    value: 'wade-cooper',
-    avatar:
-      'https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-  },
-  // More items...
-];
+import { ListBulletIcon } from '@heroicons/react/20/solid';
 
 const categories = [
   { name: 'Career & Work', value: null },
@@ -160,6 +144,7 @@ const Modal = () => {
                         <button
                           type='submit'
                           className='mr-2 inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50'
+                          onClick={() => setOpen(false)}
                         >
                           Cancel
                         </button>
