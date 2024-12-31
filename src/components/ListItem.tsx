@@ -1,43 +1,34 @@
-type Person = {
-  email: string;
-  imageUrl: string;
-  name: string;
-  role: string;
-  lastSeen?: string | null;
-  lastSeenDateTime?: string | undefined;
+import { HeartIcon } from '@heroicons/react/24/outline';
+
+type Resolution = {
+  id: number;
+  description: string;
+  category: string;
+  datePosted: string;
+  likes: number;
 };
 
-const ListItem = (person: Person) => {
+const ListItem = (resolution: Resolution) => {
   return (
-    <li key={person.email} className='flex justify-between gap-x-6 py-5'>
+    <li
+      key={resolution.id}
+      className='flex justify-between gap-x-8 py-5 border-2 border-black rounded-md mb-4 px-4 items-center'
+    >
       <div className='flex min-w-0 gap-x-4'>
-        <img
+        {/* <img
           alt=''
           src={person.imageUrl}
           className='size-12 flex-none rounded-full bg-gray-50'
-        />
+        /> */}
         <div className='min-w-0 flex-auto'>
-          <p className='text-sm/6 font-semibold text-gray-900'>{person.name}</p>
-          <p className='mt-1 truncate text-xs/5 text-gray-500'>
-            {person.email}
+          <p className='font-light text-wrap text-2xl text-black'>
+            {resolution.description}
           </p>
         </div>
       </div>
-      <div className='hidden shrink-0 sm:flex sm:flex-col sm:items-end'>
-        <p className='text-sm/6 text-gray-900'>{person.role}</p>
-        {person.lastSeen ? (
-          <p className='mt-1 text-xs/5 text-gray-500'>
-            Last seen{' '}
-            <time dateTime={person.lastSeenDateTime}>{person.lastSeen}</time>
-          </p>
-        ) : (
-          <div className='mt-1 flex items-center gap-x-1.5'>
-            <div className='flex-none rounded-full bg-emerald-500/20 p-1'>
-              <div className='size-1.5 rounded-full bg-emerald-500' />
-            </div>
-            <p className='text-xs/5 text-gray-500'>Online</p>
-          </div>
-        )}
+      <div className=' shrink-0 flex flex-col items-end'>
+        <HeartIcon />
+        <p className='mt-1 text-xs/5 text-gray-500'>{resolution.likes}</p>
       </div>
     </li>
   );

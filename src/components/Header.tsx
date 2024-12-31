@@ -7,14 +7,14 @@ const Header = () => {
   return (
     <div className='md:flex md:items-center md:justify-between mb-12'>
       <div className='min-w-0 flex-1'>
-        <h2 className='text-3xl font-medium text-gray-900 sm:truncate sm:text-4xl sm:tracking-tight'>
-          New Year Resolution List
-        </h2>
-        <p className='mt-2 w-3/4'>
-          Hey everyone! I built this to showcase things people are looking to
-          accomplish in 2025. I threw this together in a few hours just as a fun
-          project! If you have any questions feel free to reach out at
-          hello@kylekrny.com
+        <h1 className='text-9xl font-medium text-gray-900 sm:text-9xl'>
+          Happy New Years
+        </h1>
+        <p className='mt-2'>
+          Hey everyone! I created this for people to share their goals
+          anonymously whether it’s a massive challenge that feels impossible, a
+          dream others doubt, or a small step you’re proud of—this is your
+          space.
         </p>
       </div>
       <div className='mt-4 flex md:ml-4 md:mt-0'>
