@@ -9,6 +9,7 @@ import {
 } from '@headlessui/react';
 import { ListBulletIcon } from '@heroicons/react/20/solid';
 import { AppContext } from './context';
+import { addRecord } from '../firestore';
 
 const categories = [
   { name: 'Career & Work', value: null },
@@ -163,7 +164,8 @@ const Modal = () => {
                           Cancel
                         </button>
                         <button
-                          type='submit'
+                          type='button'
+                          onClick={() => addRecord()}
                           className='inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
                         >
                           Post
