@@ -1,17 +1,17 @@
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useRef, useState } from 'react';
 import { addRecord } from '../firestore';
 import { PlusIcon } from '@heroicons/react/20/solid';
 
 const AddListItem = () => {
   const [formData, setFormData] = useState({ description: '' });
-
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-    if (formData.description) {
-      console.log('test');
-      e.target.style.height = 'auto';
-      e.target.style.minHeight = `${e.target.scrollHeight}px`;
+    if (textAreaRef.current) {
+      textAreaRef.current.style.height = 'auto';
+      textAreaRef.current.style.overflow = 'visible';
+      textAreaRef.current.style.minHeight = `${textAreaRef.current.scrollHeight}px`;
     }
   };
 
@@ -19,6 +19,10 @@ const AddListItem = () => {
     e.preventDefault();
     addRecord(formData);
     setFormData({ description: '' });
+    if (textAreaRef.current) {
+      textAreaRef.current.style.minHeight = 'auto';
+      textAreaRef.current.style.overflow = 'hidden';
+    }
   };
 
   return (
@@ -36,8 +40,8 @@ const AddListItem = () => {
             placeholder='Create a new resolution...'
             value={formData.description}
             onChange={handleChange}
-            className='block w-full resize-none text-2xl text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0'
-            style={{ overflow: 'visible' }}
+            ref={textAreaRef}
+            className='block w-full resize-none text-xl text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0'
           />
           <button type='submit'>
             <PlusIcon aria-hidden='true' className='size-7' />

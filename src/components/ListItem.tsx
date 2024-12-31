@@ -14,7 +14,7 @@ const ListItem = (resolution: Resolution) => {
           className='size-12 flex-none rounded-full bg-gray-50'
         /> */}
         <div className='min-w-0 flex-auto'>
-          <p className='font-light text-wrap text-2xl text-black'>
+          <p className='font-light text-wrap text-xl text-black'>
             {resolution.description}
           </p>
         </div>
