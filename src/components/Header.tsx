@@ -7,7 +7,7 @@ const Header = () => {
   return (
     <div className='md:flex md:items-center md:justify-between mb-12'>
       <div className='min-w-0 flex-1'>
-        <h1 className='text-9xl font-medium text-gray-900 sm:text-9xl'>
+        <h1 className='font-medium text-gray-900 text-7xl sm:text-9xl'>
           Happy New Years
         </h1>
         <p className='mt-2'>
