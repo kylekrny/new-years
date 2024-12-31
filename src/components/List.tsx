@@ -9,6 +9,7 @@ import {
   QueryDocumentSnapshot,
   startAfter,
 } from 'firebase/firestore';
+import AddListItem from './AddListItem';
 
 const firstQuery = query(
   resolutionsRef,
@@ -63,6 +64,7 @@ const List = () => {
 
   return (
     <ul role='list' className=''>
+      <AddListItem />
       {resolutions.map((resolution) => (
         <ListItem {...resolution} />
       ))}

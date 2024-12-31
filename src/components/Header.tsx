@@ -17,7 +17,7 @@ const Header = () => {
           space.
         </p>
       </div>
-      <div className='mt-4 flex md:ml-4 md:mt-0'>
+      {/* <div className='mt-4 flex md:ml-4 md:mt-0'>
         <button
           type='button'
           className='inline-flex items-center gap-x-1.5 rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-2 ring-inset ring-black hover:bg-gray-50'
@@ -26,7 +26,7 @@ const Header = () => {
           Add Resolution
           <PlusIcon aria-hidden='true' className='size-5' />
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };
