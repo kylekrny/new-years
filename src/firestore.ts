@@ -1,5 +1,16 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  query,
+  orderBy,
+  startAt,
+  endAt,
+  limit,
+  getDocs,
+  startAfter,
+} from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_API_KEY,
@@ -12,7 +23,7 @@ const firebaseConfig = {
 };
 
 export type Resolution = {
-  id?: number;
+  id?: string;
   description: string;
   category?: string;
   datePosted?: string;
@@ -23,9 +34,13 @@ export const app = initializeApp(firebaseConfig);
 
 export const db = getFirestore(app);
 
+export const resolutionsRef = collection(db, 'resolutions');
+
+export const pageSize = import.meta.env.VITE_PAGE_SIZE;
+
 export const addRecord = async (resolution: Resolution) => {
   try {
-    const docRef = await addDoc(collection(db, 'resolutions'), {
+    const docRef = await addDoc(resolutionsRef, {
       description: resolution.description,
     });
     console.log('Document written with ID: ', docRef.id);
