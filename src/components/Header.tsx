@@ -5,7 +5,7 @@ import { AppContext } from './context';
 const Header = () => {
   const context = useContext(AppContext);
   return (
-    <div className='md:flex md:items-center md:justify-between'>
+    <div className='md:flex md:items-center md:justify-between mb-12'>
       <div className='min-w-0 flex-1'>
         <h1 className='font-medium text-gray-900 text-7xl sm:text-9xl'>
           Happy New Years
