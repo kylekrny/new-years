@@ -1,46 +1,55 @@
-import { useContext, useState } from 'react';
+import { ChangeEvent, FormEvent, useContext, useState } from 'react';
 import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react';
-import {
-  Label,
-  Listbox,
-  ListboxButton,
-  ListboxOption,
-  ListboxOptions,
-} from '@headlessui/react';
-import { ListBulletIcon } from '@heroicons/react/20/solid';
+// import {
+//   Label,
+//   Listbox,
+//   ListboxButton,
+//   ListboxOption,
+//   ListboxOptions,
+// } from '@headlessui/react';
+// import { ListBulletIcon } from '@heroicons/react/20/solid';
 import { AppContext } from './context';
 import { addRecord } from '../firestore';
 
-const categories = [
-  { name: 'Career & Work', value: null },
-  { name: 'Health & Fitness', value: 1 },
-  { name: 'Finances', value: 2 },
-  { name: 'Career & Work', value: 3 },
-  { name: 'Education & Learning', value: 4 },
-  { name: 'Travel & Adventure', value: 5 },
-  { name: 'Hobbies & Creativity', value: 6 },
-  { name: 'Mental Health', value: 7 },
-  { name: 'Relationships', value: 8 },
-  { name: 'Lifestyle', value: 9 },
-  { name: 'Productivity', value: 10 },
-  { name: 'Environment & Social', value: 11 },
-  { name: 'Spiritual & Emotional', value: 12 },
-  { name: 'Breaking Bad Habits', value: 13 },
-  // More items...
-];
+// const categories = [
+//   { name: 'Career & Work', value: null },
+//   { name: 'Health & Fitness', value: 1 },
+//   { name: 'Finances', value: 2 },
+//   { name: 'Career & Work', value: 3 },
+//   { name: 'Education & Learning', value: 4 },
+//   { name: 'Travel & Adventure', value: 5 },
+//   { name: 'Hobbies & Creativity', value: 6 },
+//   { name: 'Mental Health', value: 7 },
+//   { name: 'Relationships', value: 8 },
+//   { name: 'Lifestyle', value: 9 },
+//   { name: 'Productivity', value: 10 },
+//   { name: 'Environment & Social', value: 11 },
+//   { name: 'Spiritual & Emotional', value: 12 },
+//   { name: 'Breaking Bad Habits', value: 13 },
+// ];
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
+// function classNames(...classes) {
+//   return classes.filter(Boolean).join(' ');
+// }
 
 export type ModalHandler = (value: boolean) => void;
 
 const Modal = () => {
   const context = useContext(AppContext);
-  const [category, setCategory] = useState(categories[0]);
+  const [formData, setFormData] = useState({ description: '' });
+  // const [category, setCategory] = useState(categories[0]);
 
   const toggleModal = () => {
     context?.setOpen(!context.open);
+  };
+
+  const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    addRecord(formData);
   };
 
   return (
@@ -62,9 +71,9 @@ const Modal = () => {
           >
             <div className=''>
               <div className='mt-3 text-center sm:mt-0 sm:text-left'>
-                <form action='#' className='relative'>
+                <form onSubmit={handleSubmit} className='relative'>
                   <div className='rounded-lg bg-white outline outline-1 -outline-offset-1 outline-gray-300 focus-within:outline focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600'>
-                    <label htmlFor='title' className='sr-only'>
+                    {/* <label htmlFor='title' className='sr-only'>
                       Title
                     </label>
                     <input
@@ -73,7 +82,7 @@ const Modal = () => {
                       type='text'
                       placeholder='Title'
                       className='block w-full px-3 pt-2.5 text-lg font-medium text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0'
-                    />
+                    /> */}
                     <label htmlFor='description' className='sr-only'>
                       Description
                     </label>
@@ -81,9 +90,10 @@ const Modal = () => {
                       id='description'
                       name='description'
                       rows={2}
-                      placeholder='Write a description...'
+                      placeholder='This year...'
+                      value={formData.description}
+                      onChange={handleChange}
                       className='block w-full resize-none px-3 py-1.5 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm/6'
-                      defaultValue={''}
                     />
 
                     {/* Spacer element to match the height of the toolbar */}
@@ -102,7 +112,7 @@ const Modal = () => {
 
                   <div className='absolute inset-x-px bottom-0'>
                     {/* Actions: These are just examples to demonstrate the concept, replace/wire these up however makes sense for your project. */}
-                    <div className='flex flex-nowrap justify-end space-x-2 px-2 py-2 sm:px-3'>
+                    {/* <div className='flex flex-nowrap justify-end space-x-2 px-2 py-2 sm:px-3'>
                       <Listbox
                         as='div'
                         value={category}
@@ -153,19 +163,18 @@ const Modal = () => {
                           </ListboxOptions>
                         </div>
                       </Listbox>
-                    </div>
+                    </div> */}
                     <div className='flex items-center justify-end space-x-3 border-t border-gray-200 px-2 py-2 sm:px-3'>
                       <div className='shrink-0'>
                         <button
-                          type='submit'
+                          type='button'
                           className='mr-2 inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50'
                           onClick={toggleModal}
                         >
                           Cancel
                         </button>
                         <button
-                          type='button'
-                          onClick={() => addRecord()}
+                          type='submit'
                           className='inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
                         >
                           Post

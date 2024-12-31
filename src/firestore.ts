@@ -11,16 +11,22 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_MEASUREMENT_ID,
 };
 
+export type Resolution = {
+  id?: number;
+  description: string;
+  category?: string;
+  datePosted?: string;
+  likes?: number;
+};
+
 export const app = initializeApp(firebaseConfig);
 
 export const db = getFirestore(app);
 
-export const addRecord = async () => {
+export const addRecord = async (resolution: Resolution) => {
   try {
-    const docRef = await addDoc(collection(db, 'users'), {
-      first: 'Ada',
-      last: 'Lovelace',
-      born: 1815,
+    const docRef = await addDoc(collection(db, 'resolutions'), {
+      description: resolution.description,
     });
     console.log('Document written with ID: ', docRef.id);
   } catch (e) {

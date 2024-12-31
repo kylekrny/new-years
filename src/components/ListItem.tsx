@@ -1,12 +1,5 @@
 import { HeartIcon } from '@heroicons/react/24/outline';
-
-type Resolution = {
-  id: number;
-  description: string;
-  category: string;
-  datePosted: string;
-  likes: number;
-};
+import { Resolution } from '../firestore';
 
 const ListItem = (resolution: Resolution) => {
   return (
