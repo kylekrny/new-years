@@ -12,53 +12,72 @@ import {
 import AddListItem from './AddListItem';
 import { AppContext } from './context';
 
-const firstQuery = query(
-  resolutionsRef,
-  orderBy('datePosted', 'desc'),
-  limit(pageSize)
-);
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getBatch = async (lastVisible: any) => {
-  if (!lastVisible) {
-    const documentSnapshots = await getDocs(first);
-
-    const last = documentSnapshots.docs[documentSnapshots.docs.length - 1];
-    return { docs: documentSnapshots, last };
-  } else {
-    const next = query(
-      resolutionsRef,
-      orderBy('datePosted', 'desc'),
-      startAfter(lastVisible),
-      limit(pageSize)
-    );
-    const docSnapshots = await getDocs(next);
-
-    const last = docSnapshots.docs[docSnapshots.docs.length - 1];
-    return { docSnapshots, last };
-  }
-};
-
 const List = () => {
   const context = useContext(AppContext);
   const [resolutions, setResolutions] = useState<Resolution[]>([]);
-  const [lastVisible, setLastVisible] = useState<QueryDocumentSnapshot>();
+  const [lastVisible, setLastVisible] = useState<QueryDocumentSnapshot>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [hasMore, setHasMore] = useState<boolean>(true);
 
   const fetchRecords = async () => {
-    try {
-      const querySnapshot = await getDocs(firstQuery);
-      setLastVisible(querySnapshot.docs[querySnapshot.docs.length - 1]);
+    if (loading || !hasMore) return;
 
-      setResolutions(
-        querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as Resolution[]
+    setLoading(true);
+
+    const firstQ = query(
+      resolutionsRef,
+      orderBy('datePosted', 'desc'),
+      limit(pageSize)
+    );
+
+    const batchQ = query(
+      resolutionsRef,
+      orderBy('datePosted', 'desc'),
+      limit(pageSize),
+      startAfter(lastVisible)
+    );
+
+    try {
+      const querySnapshot = await getDocs(
+        hasMore && lastVisible ? batchQ : firstQ
       );
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data = querySnapshot.docs.map((doc: any) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Resolution[];
+      setResolutions((prev) => {
+        const existingIds = new Set(prev.map((item) => item.id));
+        const newItems = data.filter((item) => !existingIds.has(item.id));
+        return [...prev, ...newItems];
+      });
+      const last = querySnapshot.docs[querySnapshot.docs.length - 1];
+      setLastVisible(last);
+
+      if (data.length < pageSize) {
+        setHasMore(false);
+      }
     } catch (e) {
       console.log(e);
     }
+
+    setLoading(false);
   };
+
+  const handleScroll = () => {
+    const scrollPosition =
+      window.innerHeight + document.documentElement.scrollTop;
+    const bottomPosition = document.documentElement.offsetHeight - 100; // Trigger 100px before the bottom
+
+    if (scrollPosition >= bottomPosition && !loading && hasMore) {
+      fetchRecords();
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastVisible, loading, hasMore]);
 
   useEffect(() => {
     fetchRecords();
