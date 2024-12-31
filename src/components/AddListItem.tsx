@@ -1,8 +1,10 @@
-import { ChangeEvent, FormEvent, useRef, useState } from 'react';
-import { addRecord } from '../firestore';
+import { ChangeEvent, FormEvent, useContext, useRef, useState } from 'react';
+import { addRecord, testPost } from '../firestore';
 import { PlusIcon } from '@heroicons/react/20/solid';
+import { AppContext } from './context';
 
 const AddListItem = () => {
+  const context = useContext(AppContext);
   const [formData, setFormData] = useState({ description: '' });
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -16,13 +18,20 @@ const AddListItem = () => {
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    addRecord(formData);
-    setFormData({ description: '' });
-    if (textAreaRef.current) {
-      textAreaRef.current.style.minHeight = 'auto';
-      textAreaRef.current.style.overflow = 'hidden';
-    }
+    testPost(formData.description).then((res) => {
+      e.preventDefault();
+      if (res) {
+        addRecord(formData);
+        setFormData({ description: '' });
+        context?.setSubmitted(true);
+        if (textAreaRef.current) {
+          textAreaRef.current.style.minHeight = 'auto';
+          textAreaRef.current.style.overflow = 'hidden';
+        }
+      } else {
+        console.log('no thank you');
+      }
+    });
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -51,9 +60,11 @@ const AddListItem = () => {
             ref={textAreaRef}
             className='block w-full resize-none text-xl text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0'
           />
-          <button type='submit'>
-            <PlusIcon aria-hidden='true' className='size-7' />
-          </button>
+          {formData.description && (
+            <button type='submit'>
+              <PlusIcon aria-hidden='true' className='size-7' />
+            </button>
+          )}
         </div>
         {formData.description && (
           <div className='w-full'>

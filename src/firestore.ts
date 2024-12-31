@@ -15,7 +15,7 @@ export type Resolution = {
   id?: string;
   description: string;
   category?: string;
-  datePosted?: string;
+  datePosted?: number;
   likes?: number;
 };
 
@@ -27,10 +27,62 @@ export const resolutionsRef = collection(db, 'resolutions');
 
 export const pageSize = import.meta.env.VITE_PAGE_SIZE;
 
+const inappropriateWords = [
+  'fuck',
+  'fk',
+  'shit',
+  'sht',
+  'cunt',
+  'pussy',
+  'asshole',
+  'bitch',
+  'tits',
+  'dick',
+  'cock',
+  'nigg',
+  'mf',
+  'boobs',
+  'breast',
+  'jew',
+  'fag',
+  'homo',
+  'hate',
+  'blowjob',
+  'bj',
+  'butt',
+  'anal',
+  'anus',
+  'arse',
+  'dyke',
+  'dildo',
+  'damn',
+  'jizz',
+  'clitoris',
+  'cum',
+  'slut',
+  'vagina',
+  'whore',
+  'wank',
+  'wtf',
+  'skank',
+];
+
+export const testPost = async (text: string) => {
+  const containsInappropriateWords = await inappropriateWords.some((word) =>
+    text.toLowerCase().includes(word.toLowerCase())
+  );
+
+  if (containsInappropriateWords) {
+    return false;
+  } else return true;
+};
+
 export const addRecord = async (resolution: Resolution) => {
   try {
     const docRef = await addDoc(resolutionsRef, {
       description: resolution.description,
+      datePosted: Math.floor(Date.now() / 1000),
+      likes: 0,
     });
     console.log('Document written with ID: ', docRef.id);
   } catch (e) {

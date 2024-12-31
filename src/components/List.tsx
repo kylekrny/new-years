@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { getBatch, pageSize, Resolution, resolutionsRef } from '../firestore';
 import ListItem from './ListItem';
 import {
@@ -10,10 +10,11 @@ import {
   startAfter,
 } from 'firebase/firestore';
 import AddListItem from './AddListItem';
+import { AppContext } from './context';
 
 const firstQuery = query(
   resolutionsRef,
-  orderBy('description'),
+  orderBy('datePosted', 'desc'),
   limit(pageSize)
 );
 
@@ -27,7 +28,7 @@ const getBatch = async (lastVisible: any) => {
   } else {
     const next = query(
       resolutionsRef,
-      orderBy('description'),
+      orderBy('datePosted', 'desc'),
       startAfter(lastVisible),
       limit(pageSize)
     );
@@ -39,6 +40,7 @@ const getBatch = async (lastVisible: any) => {
 };
 
 const List = () => {
+  const context = useContext(AppContext);
   const [resolutions, setResolutions] = useState<Resolution[]>([]);
   const [lastVisible, setLastVisible] = useState<QueryDocumentSnapshot>();
 
@@ -60,7 +62,8 @@ const List = () => {
 
   useEffect(() => {
     fetchRecords();
-  }, []);
+    context?.setSubmitted(false);
+  }, [context?.submitted]);
 
   return (
     <ul role='list' className=''>
