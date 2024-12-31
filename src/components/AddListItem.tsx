@@ -25,6 +25,13 @@ const AddListItem = () => {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(e as unknown as FormEvent<HTMLFormElement>);
+    }
+  };
+
   return (
     <li className='flex py-5 border-2 border-black rounded-md mb-4 px-4 items-center'>
       <form onSubmit={handleSubmit} className='w-full flex flex-col'>
@@ -40,6 +47,7 @@ const AddListItem = () => {
             placeholder='Create a new resolution...'
             value={formData.description}
             onChange={handleChange}
+            onKeyDown={handleKeyDown}
             ref={textAreaRef}
             className='block w-full resize-none text-xl text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0'
           />
@@ -49,7 +57,13 @@ const AddListItem = () => {
         </div>
         {formData.description && (
           <div className='w-full'>
-            <p className='text-xs/5 text-gray-500 w-full'>
+            <p
+              className={`text-xs/5 ${
+                formData.description.length >= 190
+                  ? 'text-red-500'
+                  : 'text-gray-500'
+              } w-full`}
+            >
               {formData.description.length}/200
             </p>
           </div>
