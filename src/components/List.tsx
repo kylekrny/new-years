@@ -1,53 +1,97 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useContext, useEffect, useState } from 'react';
+import { pageSize, Resolution, resolutionsRef } from '../firestore';
 import ListItem from './ListItem';
-
-const resolutions = [
-  {
-    id: 1,
-    description: 'This year I would like to get to lose 26 pounds.',
-    category: 'Health and Fitness',
-    likes: 25,
-    datePosted: 'string',
-  },
-  {
-    id: 2,
-    description: 'This year I would like to propose to my girlfriend.',
-    category: 'Health and Fitness',
-    likes: 25,
-    datePosted: 'string',
-  },
-  {
-    id: 3,
-    description:
-      'This year I would like to start my side hustle and quit my day job by the end of the year.',
-    category: 'Health and Fitness',
-    likes: 25,
-    datePosted: 'string',
-  },
-  {
-    id: 4,
-    description:
-      'This year I want to learn to love myself and appreciate the person I see in the mirror.',
-    category: 'Health and Fitness',
-    likes: 25,
-    datePosted: 'string',
-  },
-  {
-    id: 5,
-    description:
-      'Lorem ipsum odor amet, consectetuer adipiscing elit. Nostra laoreet accumsan parturient magna ac vulputate donec.',
-    category: 'Health and Fitness',
-    likes: 25,
-    datePosted: 'string',
-  },
-];
+import {
+  DocumentData,
+  getDocs,
+  limit,
+  orderBy,
+  Query,
+  query,
+  QueryDocumentSnapshot,
+  startAfter,
+} from 'firebase/firestore';
+import AddListItem from './AddListItem';
+import { AppContext } from './context';
 
 const List = () => {
+  const context = useContext(AppContext);
+  const [lastVisible, setLastVisible] = useState<QueryDocumentSnapshot>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+
+  const initialQ = query(
+    resolutionsRef,
+    orderBy('datePosted', 'desc'),
+    limit(pageSize)
+  );
+
+  const batchQ = query(
+    resolutionsRef,
+    orderBy('datePosted', 'desc'),
+    limit(pageSize),
+    startAfter(lastVisible)
+  );
+
+  const fetchRecords = async (query: Query<DocumentData>) => {
+    if (!loading && hasMore) {
+      setLoading(true);
+
+      try {
+        const querySnapshot = await getDocs(query);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const data = querySnapshot.docs.map((doc: any) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as Resolution[];
+        context?.setResolutions((prev) => {
+          const existingIds = new Set(prev.map((item) => item.id));
+          const newItems = data.filter((item) => !existingIds.has(item.id));
+          return [...prev, ...newItems];
+        });
+        const last = querySnapshot.docs[querySnapshot.docs.length - 1];
+        setLastVisible(last);
+
+        if (data.length < pageSize) {
+          setHasMore(false);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchRecords(initialQ);
+  }, []);
+
+  const handleLoadMore = () => {
+    fetchRecords(batchQ);
+  };
+
   return (
-    <ul role='list' className=''>
-      {resolutions.map((resolution) => (
-        <ListItem {...resolution} />
-      ))}
-    </ul>
+    <>
+      <ul role='list' className=''>
+        <AddListItem />
+        {context?.resolutions.map((resolution) => (
+          <ListItem {...resolution} />
+        ))}
+      </ul>
+      {context?.resolutions && context?.resolutions.length >= pageSize && (
+        <div
+          className={`w-full flex justify-center ${
+            hasMore ? 'text-blue-500' : 'text-gray-500'
+          } font-medium pt-4`}
+        >
+          <button onClick={handleLoadMore} disabled={!hasMore}>
+            {hasMore ? 'load more' : 'end of results'}
+          </button>
+        </div>
+      )}
+    </>
   );
 };
 export default List;
