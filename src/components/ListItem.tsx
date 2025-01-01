@@ -27,10 +27,7 @@ const ListItem = (resolution: Resolution) => {
   }, []);
 
   return (
-    <li
-      key={resolution.id}
-      className='flex justify-between gap-x-8 py-5 border-2 border-black rounded-md mb-4 px-4 items-center'
-    >
+    <li className='flex justify-between gap-x-8 py-5 border-2 border-black rounded-md mb-4 px-4 items-center'>
       <div className='flex min-w-0 gap-x-4'>
         <div className='min-w-0 flex-auto'>
           <p className='font-light text-wrap text-xl text-black'>

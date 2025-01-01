@@ -17,7 +17,7 @@ import { AppContext } from './context';
 
 const List = () => {
   const context = useContext(AppContext);
-  const [lastVisible, setLastVisible] = useState<QueryDocumentSnapshot>(null);
+  const [lastVisible, setLastVisible] = useState<QueryDocumentSnapshot>();
   const [loading, setLoading] = useState<boolean>(false);
   const [hasMore, setHasMore] = useState<boolean>(true);
 
@@ -25,13 +25,6 @@ const List = () => {
     resolutionsRef,
     orderBy('datePosted', 'desc'),
     limit(pageSize)
-  );
-
-  const batchQ = query(
-    resolutionsRef,
-    orderBy('datePosted', 'desc'),
-    limit(pageSize),
-    startAfter(lastVisible)
   );
 
   const fetchRecords = async (query: Query<DocumentData>) => {
@@ -69,7 +62,16 @@ const List = () => {
   }, []);
 
   const handleLoadMore = () => {
-    fetchRecords(batchQ);
+    const batchQ = query(
+      resolutionsRef,
+      orderBy('datePosted', 'desc'),
+      limit(pageSize),
+      startAfter(lastVisible)
+    );
+
+    if (lastVisible !== undefined) {
+      fetchRecords(batchQ);
+    }
   };
 
   return (
@@ -77,7 +79,7 @@ const List = () => {
       <ul role='list' className=''>
         <AddListItem />
         {context?.resolutions.map((resolution) => (
-          <ListItem {...resolution} />
+          <ListItem {...resolution} key={resolution.id} />
         ))}
       </ul>
       {context?.resolutions && context?.resolutions.length >= pageSize && (
@@ -86,7 +88,7 @@ const List = () => {
             hasMore ? 'text-blue-500' : 'text-gray-500'
           } font-medium pt-4`}
         >
-          <button onClick={handleLoadMore} disabled={!hasMore}>
+          <button onClick={() => handleLoadMore()} disabled={!hasMore}>
             {hasMore ? 'load more' : 'end of results'}
           </button>
         </div>
