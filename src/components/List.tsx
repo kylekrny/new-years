@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useContext, useEffect, useState } from 'react';
-import { getBatch, pageSize, Resolution, resolutionsRef } from '../firestore';
+import { pageSize, Resolution, resolutionsRef } from '../firestore';
 import ListItem from './ListItem';
 import {
   getDocs,
@@ -38,9 +39,7 @@ const List = () => {
     );
 
     try {
-      const querySnapshot = await getDocs(
-        hasMore && lastVisible ? batchQ : firstQ
-      );
+      const querySnapshot = await getDocs(lastVisible ? batchQ : firstQ);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const data = querySnapshot.docs.map((doc: any) => ({
         id: doc.id,
@@ -63,21 +62,6 @@ const List = () => {
 
     setLoading(false);
   };
-
-  const handleScroll = () => {
-    const scrollPosition =
-      window.innerHeight + document.documentElement.scrollTop;
-    const bottomPosition = document.documentElement.offsetHeight - 100; // Trigger 100px before the bottom
-
-    if (scrollPosition >= bottomPosition && !loading && hasMore) {
-      fetchRecords();
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastVisible, loading, hasMore]);
 
   useEffect(() => {
     fetchRecords();
