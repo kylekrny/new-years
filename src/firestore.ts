@@ -1,5 +1,12 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  updateDoc,
+  increment,
+  doc,
+} from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_API_KEY,
@@ -98,4 +105,8 @@ export const addRecord = async (resolution: Resolution) => {
 
     return null;
   }
+};
+
+export const updateRecord = async (id: string) => {
+  await updateDoc(doc(db, 'resolutions', id), { likes: increment(1) });
 };
