@@ -2,7 +2,7 @@
   "name": "new-years",
   "private": true,
   "version": "0.1.0",
-  "homepage": "https://kylekrny.github.io/new-years",
+  "homepage": "https://kylekrny.github.io/new-years/",
   "type": "module",
   "scripts": {
     "dev": "vite",
