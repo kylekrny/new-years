@@ -22,7 +22,6 @@ const AddListItem = () => {
       e.preventDefault();
       if (res) {
         addRecord(formData).then((record: Resolution | null) => {
-          console.log(record);
           if (record) {
             context?.setResolutions((prev) => [record, ...prev]);
             setFormData({ description: '' });
