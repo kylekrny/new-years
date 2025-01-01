@@ -78,14 +78,24 @@ export const testPost = async (text: string) => {
 };
 
 export const addRecord = async (resolution: Resolution) => {
+  const datePosted = Math.floor(Date.now() / 1000);
+
   try {
     const docRef = await addDoc(resolutionsRef, {
       description: resolution.description,
-      datePosted: Math.floor(Date.now() / 1000),
+      datePosted,
       likes: 0,
     });
-    console.log('Document written with ID: ', docRef.id);
+
+    return {
+      datePosted,
+      description: resolution.description,
+      likes: 0,
+      id: docRef.id,
+    };
   } catch (e) {
     console.error('Error adding document: ', e);
+
+    return null;
   }
 };

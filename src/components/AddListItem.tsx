@@ -1,5 +1,5 @@
 import { ChangeEvent, FormEvent, useContext, useRef, useState } from 'react';
-import { addRecord, testPost } from '../firestore';
+import { addRecord, Resolution, testPost } from '../firestore';
 import { PlusIcon } from '@heroicons/react/20/solid';
 import { AppContext } from './context';
 
@@ -21,13 +21,17 @@ const AddListItem = () => {
     testPost(formData.description).then((res) => {
       e.preventDefault();
       if (res) {
-        addRecord(formData);
-        setFormData({ description: '' });
-        context?.setSubmitted(true);
-        if (textAreaRef.current) {
-          textAreaRef.current.style.minHeight = 'auto';
-          textAreaRef.current.style.overflow = 'hidden';
-        }
+        addRecord(formData).then((record: Resolution | null) => {
+          console.log(record);
+          if (record) {
+            context?.setResolutions((prev) => [record, ...prev]);
+            setFormData({ description: '' });
+            if (textAreaRef.current) {
+              textAreaRef.current.style.minHeight = 'auto';
+              textAreaRef.current.style.overflow = 'hidden';
+            }
+          }
+        });
       } else {
         console.log('no thank you');
       }

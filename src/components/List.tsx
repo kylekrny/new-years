@@ -15,7 +15,6 @@ import { AppContext } from './context';
 
 const List = () => {
   const context = useContext(AppContext);
-  const [resolutions, setResolutions] = useState<Resolution[]>([]);
   const [lastVisible, setLastVisible] = useState<QueryDocumentSnapshot>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [hasMore, setHasMore] = useState<boolean>(true);
@@ -45,7 +44,7 @@ const List = () => {
         id: doc.id,
         ...doc.data(),
       })) as Resolution[];
-      setResolutions((prev) => {
+      context?.setResolutions((prev) => {
         const existingIds = new Set(prev.map((item) => item.id));
         const newItems = data.filter((item) => !existingIds.has(item.id));
         return [...prev, ...newItems];
@@ -65,13 +64,12 @@ const List = () => {
 
   useEffect(() => {
     fetchRecords();
-    context?.setSubmitted(false);
-  }, [context?.submitted]);
+  }, []);
 
   return (
     <ul role='list' className=''>
       <AddListItem />
-      {resolutions.map((resolution) => (
+      {context?.resolutions.map((resolution) => (
         <ListItem {...resolution} />
       ))}
     </ul>
