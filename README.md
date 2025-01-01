@@ -1,3 +1,13 @@
+# New Year's Resolutions App
+
+In honor of the new year I threw together this quick little app for people to anonymously upload new years resolutions. (aka I wanted to narrow scope, and not include user auth).
+
+You can create a resolution as well as view and like other people's resolutions.
+
+Built in about 8 hours utilizing Vite, React and Firestore for data storage. Hosted on GH Pages
+
+If you have any questions please feel free to reach out.
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
@@ -22,7 +32,7 @@ export default tseslint.config({
       tsconfigRootDir: import.meta.dirname,
     },
   },
-})
+});
 ```
 
 - Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
@@ -31,7 +41,7 @@ export default tseslint.config({
 
 ```js
 // eslint.config.js
-import react from 'eslint-plugin-react'
+import react from 'eslint-plugin-react';
 
 export default tseslint.config({
   // Set the react version
@@ -46,5 +56,5 @@ export default tseslint.config({
     ...react.configs.recommended.rules,
     ...react.configs['jsx-runtime'].rules,
   },
-})
+});
 ```
